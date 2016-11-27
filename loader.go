@@ -20,41 +20,52 @@ type Loader struct {
 }
 
 func (self *Loader) Load() error {
-	self.Initialize()
-	self.SetConfigEnv()
+	self.PopulateOption()
 
 	if err := self.LoadFiles(); err != nil {
 		return err
 	}
 
-	if err := envconfig.Process(self.Option.Prefix, self.Struct); err != nil {
+	if err := self.LoadEnvVars(); err != nil {
 		return err
 	}
 
-	if _, err := govalidator.ValidateStruct(self.Struct); err != nil {
+	if err := self.Validate(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (self *Loader) Initialize() {
+func (self *Loader) PopulateOption() {
 	opt := &self.Option
-	opt.setDefault()
 
-	godotenv.Load()
+	if opt.Prefix == "" {
+		opt.Prefix = DEFAULT_PREFIX
+	}
+
+	if opt.Dir == "" {
+		opt.Dir = DEFAULT_DIR
+	}
+
+	if opt.ConfigEnv == "" {
+		env := &struct {
+			Env string
+		}{}
+
+		envconfig.Process(opt.Prefix, env)
+
+		if env.Env != "" {
+			opt.ConfigEnv = env.Env
+		} else {
+			opt.ConfigEnv = DEFAULT_CONFIG_ENV
+		}
+	}
 }
 
-func (self *Loader) SetConfigEnv() {
-	env := &struct {
-		Env string
-	}{}
-
-	envconfig.Process(self.Option.Prefix, env)
-
-	if env.Env != "" {
-		self.Option.ConfigEnv = env.Env
-	}
+func (self *Loader) LoadEnvVars() error {
+	godotenv.Load()
+	return envconfig.Process(self.Option.Prefix, self.Struct)
 }
 
 func (self *Loader) LoadFiles() error {
@@ -72,7 +83,7 @@ func (self *Loader) LoadFiles() error {
 		}
 
 		for _, path := range paths {
-			if err := self.LoadFile(path); err != nil {
+			if err := self.loadFile(path); err != nil {
 				return err
 			}
 		}
@@ -81,7 +92,7 @@ func (self *Loader) LoadFiles() error {
 	return nil
 }
 
-func (self *Loader) LoadFile(path string) error {
+func (self *Loader) loadFile(path string) error {
 	file, err := os.Open(path)
 	if err != nil {
 		return nil
@@ -93,4 +104,9 @@ func (self *Loader) LoadFile(path string) error {
 	}
 
 	return yaml.Unmarshal(b, self.Struct)
+}
+
+func (self *Loader) Validate() error {
+	_, err := govalidator.ValidateStruct(self.Struct)
+	return err
 }

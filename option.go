@@ -1,21 +1,13 @@
 package configo
 
+const (
+	DEFAULT_CONFIG_ENV = "development"
+	DEFAULT_PREFIX     = "app"
+	DEFAULT_DIR        = "."
+)
+
 type Option struct {
 	ConfigEnv string
 	Prefix    string
 	Dir       string
-}
-
-func (self *Option) setDefault() {
-	if self.Prefix == "" {
-		self.Prefix = "app"
-	}
-
-	if self.Dir == "" {
-		self.Dir = "."
-	}
-
-	if self.ConfigEnv == "" {
-		self.ConfigEnv = "development"
-	}
 }
