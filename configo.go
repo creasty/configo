@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/ghodss/yaml"
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
@@ -61,6 +62,10 @@ func Load(in interface{}, opt Option) error {
 	}
 
 	if err := envconfig.Process(opt.Prefix, in); err != nil {
+		return err
+	}
+
+	if _, err := govalidator.ValidateStruct(in); err != nil {
 		return err
 	}
 

@@ -7,7 +7,7 @@ import (
 	"github.com/creasty/configo"
 )
 
-type Sample struct {
+type Sample1 struct {
 	ValFromDotenv string
 	ValFromEnv    string
 	ValFromYaml   string
@@ -19,15 +19,28 @@ type Sample struct {
 	}
 }
 
-func TestLoad(t *testing.T) {
-	s := &Sample{}
+type Sample2 struct {
+	Required string `valid:"required"`
+}
 
+func init() {
 	os.Clearenv()
+}
+
+func load(in interface{}) error {
+	return configo.Load(in, configo.Option{
+		Dir: "./data/config",
+	})
+}
+
+func TestLoad(t *testing.T) {
+	s := &Sample1{}
+
 	os.Setenv("APP_ENV", "production")
 	os.Setenv("APP_VALFROMENV", "env")
 	os.Setenv("APP_NESTED_OVERRIDE3", "env")
 
-	if err := configo.Load(s, configo.Option{Dir: "./data/config"}); err != nil {
+	if err := load(s); err != nil {
 		t.Error(err)
 		return
 	}
@@ -54,5 +67,19 @@ func TestLoad(t *testing.T) {
 
 	if s.Nested.Override3 != "env" {
 		t.Error("should be overrided by env")
+	}
+}
+
+func TestValidation(t *testing.T) {
+	s := &Sample2{}
+
+	if err := load(s); err == nil {
+		t.Error("should return error if a struct is not valid")
+	}
+
+	os.Setenv("APP_REQUIRED", "foo")
+
+	if err := load(s); err != nil {
+		t.Error("should validate a struct")
 	}
 }
