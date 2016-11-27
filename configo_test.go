@@ -12,10 +12,15 @@ type Sample1 struct {
 	ValFromEnv    string
 	ValFromYaml   string
 
-	Nested struct {
+	Nested1 struct {
 		Override1 string
 		Override2 string
 		Override3 string
+	}
+
+	Nested2 struct {
+		Override1 string
+		Override2 string
 	}
 }
 
@@ -38,7 +43,7 @@ func TestLoad(t *testing.T) {
 
 	os.Setenv("APP_ENV", "production")
 	os.Setenv("APP_VALFROMENV", "env")
-	os.Setenv("APP_NESTED_OVERRIDE3", "env")
+	os.Setenv("APP_NESTED1_OVERRIDE3", "env")
 
 	if err := load(s); err != nil {
 		t.Error(err)
@@ -57,16 +62,24 @@ func TestLoad(t *testing.T) {
 		t.Error("should read from default.yml")
 	}
 
-	if s.Nested.Override1 != "production" {
+	if s.Nested1.Override1 != "production" {
 		t.Error("should be overrided by production.yml")
 	}
 
-	if s.Nested.Override2 != "production.local" {
+	if s.Nested1.Override2 != "production.local" {
 		t.Error("should be overrided by production.local.yml")
 	}
 
-	if s.Nested.Override3 != "env" {
+	if s.Nested1.Override3 != "env" {
 		t.Error("should be overrided by env")
+	}
+
+	if s.Nested2.Override1 != "production" {
+		t.Error("should be overrided by nested/production.yml")
+	}
+
+	if s.Nested2.Override2 != "production.local" {
+		t.Error("should be overrided by nested/production.local.yml")
 	}
 }
 
