@@ -7,7 +7,8 @@ Definitive configuration utility in Golang
 What
 ----
 
-`configo` gathers configuration parameters from variety of sources, overlays values by a different env -- production, development, etc -- and merges into a single struct.
+`configo` gathers configuration parameters from variety of sources,  
+overlays values by a different env -- production, development, etc -- and merges into a single struct.
 
 ### Features
 
