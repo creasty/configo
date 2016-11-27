@@ -28,10 +28,6 @@ type Sample2 struct {
 	Required string `valid:"required"`
 }
 
-func init() {
-	os.Clearenv()
-}
-
 func load(in interface{}) error {
 	return configo.Load(in, configo.Option{
 		Dir: "./data/config",
@@ -41,6 +37,7 @@ func load(in interface{}) error {
 func TestLoad(t *testing.T) {
 	s := &Sample1{}
 
+	os.Clearenv()
 	os.Setenv("APP_ENV", "production")
 	os.Setenv("APP_VALFROMENV", "env")
 	os.Setenv("APP_NESTED1_OVERRIDE3", "env")
@@ -85,6 +82,8 @@ func TestLoad(t *testing.T) {
 
 func TestValidation(t *testing.T) {
 	s := &Sample2{}
+
+	os.Clearenv()
 
 	if err := load(s); err == nil {
 		t.Error("should return error if a struct is not valid")
