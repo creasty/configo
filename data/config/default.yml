@@ -3,3 +3,4 @@ ValFromYaml: yaml
 Nested:
   Override1: default
   Override2: default
+  Override3: default

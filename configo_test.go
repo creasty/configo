@@ -15,6 +15,7 @@ type Sample struct {
 	Nested struct {
 		Override1 string
 		Override2 string
+		Override3 string
 	}
 }
 
@@ -24,6 +25,7 @@ func TestLoad(t *testing.T) {
 	os.Clearenv()
 	os.Setenv("APP_ENV", "production")
 	os.Setenv("APP_VALFROMENV", "env")
+	os.Setenv("APP_NESTED_OVERRIDE3", "env")
 
 	if err := configo.Load(s, configo.Option{Dir: "./data/config"}); err != nil {
 		t.Error(err)
@@ -43,10 +45,14 @@ func TestLoad(t *testing.T) {
 	}
 
 	if s.Nested.Override1 != "production" {
-		t.Error("should read from production.yml")
+		t.Error("should be overrided by production.yml")
 	}
 
 	if s.Nested.Override2 != "production.local" {
-		t.Error("should read from production.local.yml")
+		t.Error("should be overrided by production.local.yml")
+	}
+
+	if s.Nested.Override3 != "env" {
+		t.Error("should be overrided by env")
 	}
 }
