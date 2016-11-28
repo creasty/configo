@@ -2,21 +2,10 @@ package configo_test
 
 import (
 	"os"
-	"path"
-	"path/filepath"
 	"testing"
 
 	"github.com/creasty/configo"
 )
-
-func init() {
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		panic(err)
-	}
-	dir = path.Join(dir, "test")
-	os.Chdir(dir)
-}
 
 type Specification struct {
 	Required string `valid:"required"`
@@ -134,7 +123,7 @@ func Test_Loader_PopulateOption(t *testing.T) {
 func Test_Loader_LoadFiles(t *testing.T) {
 	l := &configo.Loader{
 		Option: configo.Option{
-			Dir: "./config",
+			Dir: "./test/config",
 		},
 	}
 
@@ -163,7 +152,7 @@ func Test_Loader_LoadFiles(t *testing.T) {
 			{s.Nested.DefaultOverridedByProductionLocal, "Nested.DefaultOverridedByProductionLocal"}:       "default",
 			{s.Nested.ProductionOverridedByProductionLocal, "Nested.ProductionOverridedByProductionLocal"}: "",
 		} {
-			if actual[1] != expect {
+			if actual[0] != expect {
 				t.Errorf("expect %s to be %q, but was %q", actual[1], expect, actual[0])
 			}
 		}
@@ -194,7 +183,7 @@ func Test_Loader_LoadFiles(t *testing.T) {
 			{s.Nested.DefaultOverridedByProductionLocal, "Nested.DefaultOverridedByProductionLocal"}:       "production.local",
 			{s.Nested.ProductionOverridedByProductionLocal, "Nested.ProductionOverridedByProductionLocal"}: "production.local",
 		} {
-			if actual[1] != expect {
+			if actual[0] != expect {
 				t.Errorf("expect %s to be %q, but was %q", actual[1], expect, actual[0])
 			}
 		}
