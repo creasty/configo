@@ -47,10 +47,6 @@ type Specification struct {
 	}
 }
 
-var defaultOpt = configo.Option{
-	Dir: "./config",
-}
-
 func Test_Loader_PopulateOption(t *testing.T) {
 	s := &Specification{}
 
@@ -135,12 +131,82 @@ func Test_Loader_PopulateOption(t *testing.T) {
 	}
 }
 
+func Test_Loader_LoadFiles(t *testing.T) {
+	l := &configo.Loader{
+		Option: configo.Option{
+			Dir: "./config",
+		},
+	}
+
+	{
+		os.Clearenv()
+
+		s := &Specification{}
+		l.Struct = s
+		l.Option.ConfigEnv = "development"
+
+		if err := l.LoadFiles(); err != nil {
+			t.Error("should not fail", err)
+		}
+
+		for actual, expect := range map[[2]string]string{
+			{s.Default, "Default"}:                                                                         "default",
+			{s.Production, "Production"}:                                                                   "",
+			{s.ProductionLocal, "ProductionLocal"}:                                                         "",
+			{s.DefaultOverridedByProduction, "DefaultOverridedByProduction"}:                               "default",
+			{s.DefaultOverridedByProductionLocal, "DefaultOverridedByProductionLocal"}:                     "default",
+			{s.ProductionOverridedByProductionLocal, "ProductionOverridedByProductionLocal"}:               "",
+			{s.Nested.Default, "Nested.Default"}:                                                           "default",
+			{s.Nested.Production, "Nested.Production"}:                                                     "",
+			{s.Nested.ProductionLocal, "Nested.ProductionLocal"}:                                           "",
+			{s.Nested.DefaultOverridedByProduction, "Nested.DefaultOverridedByProduction"}:                 "default",
+			{s.Nested.DefaultOverridedByProductionLocal, "Nested.DefaultOverridedByProductionLocal"}:       "default",
+			{s.Nested.ProductionOverridedByProductionLocal, "Nested.ProductionOverridedByProductionLocal"}: "",
+		} {
+			if actual[1] != expect {
+				t.Errorf("expect %s to be %q, but was %q", actual[1], expect, actual[0])
+			}
+		}
+	}
+
+	{
+		os.Clearenv()
+
+		s := &Specification{}
+		l.Struct = s
+		l.Option.ConfigEnv = "production"
+
+		if err := l.LoadFiles(); err != nil {
+			t.Error("should not fail", err)
+		}
+
+		for actual, expect := range map[[2]string]string{
+			{s.Default, "Default"}:                                                                         "default",
+			{s.Production, "Production"}:                                                                   "production",
+			{s.ProductionLocal, "ProductionLocal"}:                                                         "production.local",
+			{s.DefaultOverridedByProduction, "DefaultOverridedByProduction"}:                               "production",
+			{s.DefaultOverridedByProductionLocal, "DefaultOverridedByProductionLocal"}:                     "production.local",
+			{s.ProductionOverridedByProductionLocal, "ProductionOverridedByProductionLocal"}:               "production.local",
+			{s.Nested.Default, "Nested.Default"}:                                                           "default",
+			{s.Nested.Production, "Nested.Production"}:                                                     "production",
+			{s.Nested.ProductionLocal, "Nested.ProductionLocal"}:                                           "production.local",
+			{s.Nested.DefaultOverridedByProduction, "Nested.DefaultOverridedByProduction"}:                 "production",
+			{s.Nested.DefaultOverridedByProductionLocal, "Nested.DefaultOverridedByProductionLocal"}:       "production.local",
+			{s.Nested.ProductionOverridedByProductionLocal, "Nested.ProductionOverridedByProductionLocal"}: "production.local",
+		} {
+			if actual[1] != expect {
+				t.Errorf("expect %s to be %q, but was %q", actual[1], expect, actual[0])
+			}
+		}
+	}
+}
+
 func Test_Loader_Validate(t *testing.T) {
 	s := &Specification{}
 
 	l := &configo.Loader{
 		Struct: s,
-		Option: defaultOpt,
+		Option: configo.Option{},
 	}
 
 	if err := l.Validate(); err == nil {
