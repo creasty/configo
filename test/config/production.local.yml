@@ -1,6 +1,8 @@
 ProductionLocal:                      production.local
+DefaultOverridedByProductionLocal:    production.local
 ProductionOverridedByProductionLocal: production.local
 
 Nested:
   ProductionLocal:                      production.local
+  DefaultOverridedByProductionLocal:    production.local
   ProductionOverridedByProductionLocal: production.local
