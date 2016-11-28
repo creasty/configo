@@ -1,6 +1,8 @@
 configo
 =======
 
+[![Build Status](https://travis-ci.org/creasty/configo.svg?branch=master)](https://travis-ci.org/creasty/configo)
+
 Definitive configuration utility in Golang
 
 
