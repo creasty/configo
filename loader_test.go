@@ -254,6 +254,30 @@ func Test_Loader_LoadEnvVars(t *testing.T) {
 			}
 		}
 	}
+
+	{
+		os.Clearenv()
+
+		s := &Specification{}
+		l.Struct = s
+
+		os.Setenv("APP_PRODUCTION", "env")
+		os.Setenv("APP_NESTED_PRODUCTION", "env")
+
+		if err := l.LoadEnvVars(); err != nil {
+			t.Error("should not fail")
+		}
+
+		for actual, expect := range map[string]string{
+			s.Production:        "env",
+			s.Nested.Production: "env",
+		} {
+			if actual != expect {
+				t.Error("should override entries in dotenv file")
+				break
+			}
+		}
+	}
 }
 
 func Test_Loader_Validate(t *testing.T) {
