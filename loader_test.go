@@ -2,10 +2,21 @@ package configo_test
 
 import (
 	"os"
+	"path"
+	"path/filepath"
 	"testing"
 
 	"github.com/creasty/configo"
 )
+
+func init() {
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		panic(err)
+	}
+	dir = path.Join(dir, "test")
+	os.Chdir(dir)
+}
 
 type Specification struct {
 	Required      string `valid:"required"`
@@ -26,7 +37,7 @@ type Specification struct {
 }
 
 var defaultOpt = configo.Option{
-	Dir: "./data/config",
+	Dir: "./config",
 }
 
 func Test_Loader_PopulateOption(t *testing.T) {
