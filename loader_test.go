@@ -55,6 +55,7 @@ func Test_Loader_PopulateOption(t *testing.T) {
 		} {
 			if actual != expect {
 				t.Error("should be initialized")
+				break
 			}
 		}
 
@@ -67,6 +68,7 @@ func Test_Loader_PopulateOption(t *testing.T) {
 		} {
 			if actual != expect {
 				t.Error("should set default values")
+				break
 			}
 		}
 	}
@@ -89,6 +91,7 @@ func Test_Loader_PopulateOption(t *testing.T) {
 		} {
 			if actual != expect {
 				t.Error("should not override with default values if values are set")
+				break
 			}
 		}
 	}
@@ -197,6 +200,57 @@ func Test_Loader_LoadFiles(t *testing.T) {
 		} {
 			if actual[0] != expect {
 				t.Errorf("expect %s to be %q, but was %q", actual[1], expect, actual[0])
+			}
+		}
+	}
+}
+
+func Test_Loader_LoadEnvVars(t *testing.T) {
+	l := &configo.Loader{
+		Option: configo.Option{Prefix: "app"},
+	}
+
+	{
+		os.Clearenv()
+
+		s := &Specification{}
+		l.Struct = s
+
+		os.Setenv("APP_DEFAULT", "env")
+		os.Setenv("APP_NESTED_DEFAULT", "env")
+
+		if err := l.LoadEnvVars(); err != nil {
+			t.Error("should not fail")
+		}
+
+		for actual, expect := range map[string]string{
+			s.Default:        "env",
+			s.Nested.Default: "env",
+		} {
+			if actual != expect {
+				t.Error("should read values from env vars")
+				break
+			}
+		}
+	}
+
+	{
+		os.Clearenv()
+
+		s := &Specification{}
+		l.Struct = s
+
+		if err := l.LoadEnvVars(); err != nil {
+			t.Error("should not fail")
+		}
+
+		for actual, expect := range map[string]string{
+			s.Production:        "dotenv",
+			s.Nested.Production: "dotenv",
+		} {
+			if actual != expect {
+				t.Error("should read values from dotenv file")
+				break
 			}
 		}
 	}
