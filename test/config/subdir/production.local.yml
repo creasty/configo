@@ -1,3 +1,4 @@
 Subdir:
   ProductionLocal:                      production.local
+  DefaultOverridedByProductionLocal:    production.local
   ProductionOverridedByProductionLocal: production.local

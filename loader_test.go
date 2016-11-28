@@ -151,6 +151,12 @@ func Test_Loader_LoadFiles(t *testing.T) {
 			{s.Nested.DefaultOverridedByProduction, "Nested.DefaultOverridedByProduction"}:                 "default",
 			{s.Nested.DefaultOverridedByProductionLocal, "Nested.DefaultOverridedByProductionLocal"}:       "default",
 			{s.Nested.ProductionOverridedByProductionLocal, "Nested.ProductionOverridedByProductionLocal"}: "",
+			{s.Subdir.Default, "Subdir.Default"}:                                                           "default",
+			{s.Subdir.Production, "Subdir.Production"}:                                                     "",
+			{s.Subdir.ProductionLocal, "Subdir.ProductionLocal"}:                                           "",
+			{s.Subdir.DefaultOverridedByProduction, "Subdir.DefaultOverridedByProduction"}:                 "default",
+			{s.Subdir.DefaultOverridedByProductionLocal, "Subdir.DefaultOverridedByProductionLocal"}:       "default",
+			{s.Subdir.ProductionOverridedByProductionLocal, "Subdir.ProductionOverridedByProductionLocal"}: "",
 		} {
 			if actual[0] != expect {
 				t.Errorf("expect %s to be %q, but was %q", actual[1], expect, actual[0])
@@ -182,6 +188,12 @@ func Test_Loader_LoadFiles(t *testing.T) {
 			{s.Nested.DefaultOverridedByProduction, "Nested.DefaultOverridedByProduction"}:                 "production",
 			{s.Nested.DefaultOverridedByProductionLocal, "Nested.DefaultOverridedByProductionLocal"}:       "production.local",
 			{s.Nested.ProductionOverridedByProductionLocal, "Nested.ProductionOverridedByProductionLocal"}: "production.local",
+			{s.Subdir.Default, "Subdir.Default"}:                                                           "default",
+			{s.Subdir.Production, "Subdir.Production"}:                                                     "production",
+			{s.Subdir.ProductionLocal, "Subdir.ProductionLocal"}:                                           "production.local",
+			{s.Subdir.DefaultOverridedByProduction, "Subdir.DefaultOverridedByProduction"}:                 "production",
+			{s.Subdir.DefaultOverridedByProductionLocal, "Subdir.DefaultOverridedByProductionLocal"}:       "production.local",
+			{s.Subdir.ProductionOverridedByProductionLocal, "Subdir.ProductionOverridedByProductionLocal"}: "production.local",
 		} {
 			if actual[0] != expect {
 				t.Errorf("expect %s to be %q, but was %q", actual[1], expect, actual[0])
