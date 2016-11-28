@@ -63,18 +63,26 @@ func Test_Loader_PopulateOption(t *testing.T) {
 
 		l.Option = configo.Option{}
 
-		if !(l.Option.Prefix == "" &&
-			l.Option.Dir == "" &&
-			l.Option.ConfigEnv == "") {
-			t.Error("should be initialized")
+		for actual, expect := range map[string]string{
+			l.Option.Prefix:    "",
+			l.Option.Dir:       "",
+			l.Option.ConfigEnv: "",
+		} {
+			if actual != expect {
+				t.Error("should be initialized")
+			}
 		}
 
 		l.PopulateOption()
 
-		if !(l.Option.Prefix == configo.DEFAULT_PREFIX &&
-			l.Option.Dir == configo.DEFAULT_DIR &&
-			l.Option.ConfigEnv == configo.DEFAULT_CONFIG_ENV) {
-			t.Error("should set default values")
+		for actual, expect := range map[string]string{
+			l.Option.Prefix:    configo.DEFAULT_PREFIX,
+			l.Option.Dir:       configo.DEFAULT_DIR,
+			l.Option.ConfigEnv: configo.DEFAULT_CONFIG_ENV,
+		} {
+			if actual != expect {
+				t.Error("should set default values")
+			}
 		}
 	}
 
@@ -89,10 +97,14 @@ func Test_Loader_PopulateOption(t *testing.T) {
 
 		l.PopulateOption()
 
-		if !(l.Option.Prefix == "prefix" &&
-			l.Option.Dir == "dir" &&
-			l.Option.ConfigEnv == "configEnv") {
-			t.Error("should not override with default values if values are set")
+		for actual, expect := range map[string]string{
+			l.Option.Prefix:    "prefix",
+			l.Option.Dir:       "dir",
+			l.Option.ConfigEnv: "configEnv",
+		} {
+			if actual != expect {
+				t.Error("should not override with default values if values are set")
+			}
 		}
 	}
 
