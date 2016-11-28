@@ -1,3 +1,6 @@
-Nested1:
-  Override1: production
-  Override2: production
+Production:                           production
+ProductionOverridedByProductionLocal: production
+
+Nested:
+  Production:                           production
+  ProductionOverridedByProductionLocal: production

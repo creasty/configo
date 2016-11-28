@@ -19,20 +19,31 @@ func init() {
 }
 
 type Specification struct {
-	Required      string `valid:"required"`
-	ValFromDotenv string
-	ValFromEnv    string
-	ValFromYaml   string
+	Required string `valid:"required"`
 
-	Nested1 struct {
-		Override1 string
-		Override2 string
-		Override3 string
+	Default                              string
+	Production                           string
+	ProductionLocal                      string
+	DefaultOverridedByProduction         string
+	DefaultOverridedByProductionLocal    string
+	ProductionOverridedByProductionLocal string
+
+	Nested struct {
+		Default                              string
+		Production                           string
+		ProductionLocal                      string
+		DefaultOverridedByProduction         string
+		DefaultOverridedByProductionLocal    string
+		ProductionOverridedByProductionLocal string
 	}
 
-	Nested2 struct {
-		Override1 string
-		Override2 string
+	Subdir struct {
+		Default                              string
+		Production                           string
+		ProductionLocal                      string
+		DefaultOverridedByProduction         string
+		DefaultOverridedByProductionLocal    string
+		ProductionOverridedByProductionLocal string
 	}
 }
 

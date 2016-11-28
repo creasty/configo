@@ -1,6 +1,8 @@
-ValFromYaml: yaml
+Default:                           default
+DefaultOverridedByProduction:      default
+DefaultOverridedByProductionLocal: default
 
-Nested1:
-  Override1: default
-  Override2: default
-  Override3: default
+Nested:
+  Default:                           default
+  DefaultOverridedByProduction:      default
+  DefaultOverridedByProductionLocal: default
