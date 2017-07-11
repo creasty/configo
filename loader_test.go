@@ -49,9 +49,10 @@ func Test_Loader_PopulateOption(t *testing.T) {
 		l.Option = configo.Option{}
 
 		for actual, expect := range map[string]string{
-			l.Option.Prefix:    "",
-			l.Option.Dir:       "",
-			l.Option.ConfigEnv: "",
+			l.Option.Prefix:     "",
+			l.Option.Dir:        "",
+			l.Option.DotenvPath: "",
+			l.Option.ConfigEnv:  "",
 		} {
 			if actual != expect {
 				t.Error("should be initialized")
@@ -62,9 +63,10 @@ func Test_Loader_PopulateOption(t *testing.T) {
 		l.PopulateOption()
 
 		for actual, expect := range map[string]string{
-			l.Option.Prefix:    configo.DEFAULT_PREFIX,
-			l.Option.Dir:       configo.DEFAULT_DIR,
-			l.Option.ConfigEnv: configo.DEFAULT_CONFIG_ENV,
+			l.Option.Prefix:     configo.DEFAULT_PREFIX,
+			l.Option.Dir:        configo.DEFAULT_DIR,
+			l.Option.DotenvPath: configo.DEFAULT_DOTENV_PATH,
+			l.Option.ConfigEnv:  configo.DEFAULT_CONFIG_ENV,
 		} {
 			if actual != expect {
 				t.Error("should set default values")
@@ -77,17 +79,19 @@ func Test_Loader_PopulateOption(t *testing.T) {
 		os.Clearenv()
 
 		l.Option = configo.Option{
-			Prefix:    "prefix",
-			Dir:       "dir",
-			ConfigEnv: "configEnv",
+			Prefix:     "prefix",
+			Dir:        "dir",
+			DotenvPath: "../.dotenv",
+			ConfigEnv:  "configEnv",
 		}
 
 		l.PopulateOption()
 
 		for actual, expect := range map[string]string{
-			l.Option.Prefix:    "prefix",
-			l.Option.Dir:       "dir",
-			l.Option.ConfigEnv: "configEnv",
+			l.Option.Prefix:     "prefix",
+			l.Option.Dir:        "dir",
+			l.Option.DotenvPath: "../.dotenv",
+			l.Option.ConfigEnv:  "configEnv",
 		} {
 			if actual != expect {
 				t.Error("should not override with default values if values are set")
@@ -207,7 +211,7 @@ func Test_Loader_LoadFiles(t *testing.T) {
 
 func Test_Loader_LoadEnvVars(t *testing.T) {
 	l := &configo.Loader{
-		Option: configo.Option{Prefix: "app"},
+		Option: configo.Option{Prefix: "app", DotenvPath: ".env"},
 	}
 
 	{
