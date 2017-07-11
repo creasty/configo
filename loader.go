@@ -48,6 +48,10 @@ func (self *Loader) PopulateOption() {
 		opt.Dir = DEFAULT_DIR
 	}
 
+	if opt.DotenvPath == "" {
+		opt.DotenvPath = DEFAULT_DOTENV_PATH
+	}
+
 	if opt.ConfigEnv == "" {
 		env := &struct {
 			Env string
@@ -64,7 +68,7 @@ func (self *Loader) PopulateOption() {
 }
 
 func (self *Loader) LoadEnvVars() error {
-	godotenv.Load()
+	godotenv.Load(self.Option.DotenvPath)
 	return envconfig.Process(self.Option.Prefix, self.Struct)
 }
 
